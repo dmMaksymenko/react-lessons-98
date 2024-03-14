@@ -1,4 +1,9 @@
+import { useEffect } from "react";
+
 const DrinksValues = ({ drinks, total }) => {
+  useEffect(() => {
+    console.log(`TOtal drinks values ${total}`);
+  }, [total]);
   return (
     <ul>
       <li>Beer: {drinks.beer}</li>

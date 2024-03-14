@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DrinksCounter from "./components/DrinksCounter/DrinksCounter";
 import DrinksValues from "./components/DrinksValues/DrinksValues";
 import MailBox from "./components/MailBox";
@@ -20,10 +20,15 @@ const ukrPoshtaUsers = [
   { id: "222", userEmail: "vika@example.com" },
   { id: "333", userEmail: "katya@example.com" },
 ];
-
+const initialDrinks = { beer: 0, whiskey: 0, wine: 0 };
 function App() {
   const [counter, setCounter] = useState(0);
-  const [drinks, setDrinks] = useState({ beer: 0, whiskey: 0, wine: 0 });
+  const [drinks, setDrinks] = useState(() => {
+    const stringifiedDrinks = localStorage.getItem("drinksValues");
+    const parsedDrinks = JSON.parse(stringifiedDrinks) ?? initialDrinks;
+    return parsedDrinks;
+  });
+  const [isVisibleBar, setIsVisibleBar] = useState(false);
 
   const handleLogDrink = (drinkName) => {
     if (drinks[drinkName] === 2 && drinkName === "beer") {
@@ -33,26 +38,49 @@ function App() {
     console.log("DrinkName: ", drinkName);
     setDrinks({ ...drinks, [drinkName]: drinks[drinkName] + 1 });
   };
-
-  const handleIncrementCounter = () => {
-    setCounter(counter + 1);
-    console.log(counter);
+  const handleResetDrinks = () => {
+    setDrinks();
   };
+  // const handleIncrementCounter = () => {
+  //   setCounter(counter + 1);
+  //   console.log(counter);
+  // };
 
-  const handleDecrementCounter = () => {
-    if (counter === 0) return;
-    setCounter(counter - 1);
-    console.log(counter);
+  // const handleDecrementCounter = () => {
+  //   if (counter === 0) return;
+  //   setCounter(counter - 1);
+  //   console.log(counter);
+  // };
+  const onToggleMinibarVisibility = () => {
+    setIsVisibleBar(!isVisibleBar);
   };
+  const drinksTotal = Object.values(drinks).reduce(
+    (acc, curr) => acc + curr,
+    0
+  );
 
-  const drinksTotal = drinks.beer + drinks.whiskey + drinks.wine;
+  useEffect(() => {
+    localStorage.setItem("drinksValues", JSON.stringify(drinks));
+  }, [drinks]);
   return (
-    <div className="app-container">
-      <button onClick={handleIncrementCounter}>Counter: {counter}</button>
-      <button onClick={handleDecrementCounter}>Counter: {counter}</button>
+    <div>
+      {/* <button onClick={handleIncrementCounter}>Counter: {counter}</button>
+      <button onClick={handleDecrementCounter}>Counter: {counter}</button> */}
+      <button onClick={onToggleMinibarVisibility}>
+        {isVisibleBar ? "Hide" : "Show"} mini-bar
+      </button>
+      {isVisibleBar && (
+        <>
+          {" "}
+          <DrinksValues drinks={drinks} total={drinksTotal} />
+          <DrinksCounter
+            onToggleMinibarVisibility={onToggleMinibarVisibility}
+            handleLogDrink={handleLogDrink}
+            handleResetDrinks={handleResetDrinks}
+          />{" "}
+        </>
+      )}
 
-      <DrinksValues drinks={drinks} total={drinksTotal} />
-      <DrinksCounter handleLogDrink={handleLogDrink} />
       {/* <button onClick={handleClick}>Click me</button>
       <button onClick={() => handleLogClick(1)}>
         Click to log my number: 1
