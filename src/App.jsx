@@ -1,26 +1,5 @@
-import { useEffect, useState } from "react";
-import DrinksCounter from "./components/DrinksCounter/DrinksCounter";
-import DrinksValues from "./components/DrinksValues/DrinksValues";
-import MailBox from "./components/MailBox";
+import { useState } from "react";
 
-const meestExpressUsers = [
-  { id: "1", userEmail: "max@example.com" },
-  { id: "2", userEmail: "alla@example.com" },
-  { id: "3", userEmail: "matviy@example.com" },
-];
-
-const novaPoshtaUsers = [
-  { id: "11", userEmail: "oleg@example.com" },
-  { id: "22", userEmail: "vanya@example.com" },
-  { id: "33", userEmail: "lola@example.com" },
-];
-
-const ukrPoshtaUsers = [
-  { id: "111", userEmail: "vasya@example.com" },
-  { id: "222", userEmail: "vika@example.com" },
-  { id: "333", userEmail: "katya@example.com" },
-];
-const initialDrinks = { beer: 0, whiskey: 0, wine: 0 };
 function App() {
   const [counter, setCounter] = useState(0);
   const [drinks, setDrinks] = useState(() => {
